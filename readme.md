@@ -22,13 +22,15 @@ user_id
 category_id
 created_at
 is_published
-Miestai
+
+2. Miestai
 
 id
 name
 population
 area
-Vartotojai
+
+3. Vartotojai
 
 id
 name
@@ -36,14 +38,18 @@ email
 password
 avatar_url
 created_at
-Kateogrijos
+
+4. Kateogrijos
 
 id
 name
-Sukure lenteles i miestu ir kategoriju lenteles irasykite bent po 5 irasus. Tai padare sukurkite bent bent 2 vartotojus ir 5 skelbimus.
 
-JSON REST API
-Skelbimu Routes
+5. Sukure lenteles i miestu ir kategoriju lenteles irasykite bent po 5 irasus. Tai padare sukurkite bent bent 2 vartotojus ir 5 skelbimus.
+
+## JSON REST API
+
+### Skelbimu Routes
+
 GET /api/ads - grazina visus skelbimus
 GET /api/ads/:id - grazina viena skelbima
 POST /api/ads - sukuria nauja skelbima
