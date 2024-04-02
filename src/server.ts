@@ -4,13 +4,14 @@ import morgan from 'morgan'
 import cors from 'cors'
 // import mysql from 'mysql2'
 import skelbimuRouter from './routes/skelbimuRoute.js'
-import { PORT, dbConfig } from './config.js'
+import { PORT } from './config.js'
+import testConnection from './helpers/msqTestRoute.js'
 
 const app = express()
 
 const port = PORT || 5000;
 
-console.log('dbConfig ===', dbConfig);
+testConnection()
 
 
 

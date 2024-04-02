@@ -10,4 +10,3 @@ port: parseInt(process.env.DB_PORT || '3309'), // Convert to number using parseI
 
 export const PORT = process.env.PORT;
 
-console.log('dbConfig ===', dbConfig);

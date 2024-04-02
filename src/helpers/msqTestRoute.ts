@@ -9,7 +9,7 @@ export default async function testConnection() {
     await conn.query('SELECT 1');
     console.log('Succesfuly connected to mysql');
   } catch (error) {
-    console.log('testConnection failed, did you start XAMPP mate???');
+    console.log('testConnection failed, did you start MAMP mate???');
     console.log(error);
   } finally {
     if (conn) conn.end();
