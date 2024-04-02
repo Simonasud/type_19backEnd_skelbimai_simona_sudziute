@@ -3,17 +3,15 @@ import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
 // import mysql from 'mysql2'
-import skelbimuRouter from './routes/skelbimuRoute.js'
 import { PORT } from './config.js'
 import testConnection from './helpers/msqTestRoute.js'
+import adsRouter from './routes/adsRouter.js'
 
 const app = express()
 
 const port = PORT || 5000;
 
 testConnection()
-
-
 
 // Middleware
 app.use(morgan('dev'))
@@ -24,7 +22,7 @@ app.get('/', (_req, res) => {
 })
 
 // Routes
-app.use('/skelbimai', skelbimuRouter)
+app.use('/api/ads', adsRouter);
 
 // 404
 app.use((req, res) => {
