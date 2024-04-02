@@ -1,0 +1,4 @@
+### Gauti visus skelbimus
+GET http://localhost:3000/skelbimai
+### Gauti visus skelbimus 404
+GET http://localhost:3000/skelbimai4004

@@ -5,4 +5,6 @@
 3. 'yarn add express'
 4. 'yarn add typescript -D'
 5. 'tsc --init'
-6.
+6. yarn add @types/express -D
+   yarn add @types/morgan -D
+   yarn add @types/cors -D
