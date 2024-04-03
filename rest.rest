@@ -1,6 +1,24 @@
 ### Gauti visus skelbimus(publikuotus)
 GET http://localhost:3000/api/ads
+
 ### Gauti visus skelbimus 404
 GET http://localhost:3000/api/4004
+
 ### Gauti viena skelbima
 GET http://localhost:3000/api/ads/1
+
+### Sukurti skelbima
+POST http://localhost:3000/api/ads
+Content-Type: application/json
+
+{
+  "title": "Parduodu vaikišką lovytę",
+  "main_image_url": "lovyte.jpg",
+  "description": "Lovyte beveik kaip nauja, yra keli įbrėžimai",
+  "price": 40,
+  "phone": "+3709998889",
+  "TYPE": "sell",
+  "town_id": 2,
+  "user_id": 1,
+  "category_id": 3
+}

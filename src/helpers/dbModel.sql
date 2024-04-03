@@ -3,6 +3,11 @@ CREATE TABLE skelbimai (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255),
     main_image_url VARCHAR(255) NOT NULL,
+    images_1 VARCHAR(255),
+    images_2 VARCHAR(255),
+    images_3 VARCHAR(255),
+    images_4 VARCHAR(255),
+    images_5 VARCHAR(255),
     description TEXT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     phone VARCHAR(20),
@@ -11,7 +16,8 @@ CREATE TABLE skelbimai (
     user_id INT NOT NULL,
     category_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-     is_published BOOLEAN NOT NULL DEFAULT FALSE
+   is_published BOOLEAN DEFAULT 1
+
 );
 
 INSERT INTO skelbimai (title, main_image_url, description, price, phone, type, town_id, user_id, category_id, is_published)

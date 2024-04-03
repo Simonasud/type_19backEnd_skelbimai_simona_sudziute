@@ -13,7 +13,7 @@ const adsCols = 'id, title, main_image_url, description, price, phone, TYPE, tow
 // GET - /api/skelbimai 'gauname visus skelbimus'
 adsRouter.get('/', async (_req, res) => {
   // panaudoti dbQueryWithData
-  const sql = `SELECT ${adsCols} FROM skelbimai WHERE is_published = TRUE`;
+  const sql = `SELECT ${adsCols} FROM skelbimai WHERE is_published=TRUE`;
 
   const [row, error] = await dbQueryWithData(sql) as [AdsObjType[], Error];
 
@@ -34,7 +34,7 @@ adsRouter.get('/', async (_req, res) => {
 adsRouter.get('/:addId', async (req, res) => {
   const currentId = req.params.addId;
 
-  const sql = `SELECT ${adsCols} FROM skelbimai WHERE is_published = TRUE AND id=?`;
+  const sql = `SELECT ${adsCols} FROM skelbimai WHERE is_published=TRUE AND id=?`;
 
   const [rows, error] = (await dbQueryWithData(sql, [currentId])) as [AdsObjType[], Error];
 
@@ -52,6 +52,27 @@ adsRouter.get('/:addId', async (req, res) => {
   console.log('rows ===', rows);
   res.json(rows[0]);
 });
+
+// POST /api/ads - sukuria nauja skelbima
+adsRouter.post('/', async (req, res) => {
+  const { title, main_image_url, description, price, phone, TYPE, town_id, user_id, category_id, created_at } = req.body as Omit<AdsObjType, 'id'>;
+  
+  // Čia turi būti kodas, kuris įterptų naują skelbimą į duomenų bazę
+  const sql = `INSERT INTO skelbimai (title, main_image_url, description, price, phone, TYPE, town_id, user_id, category_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  
+  const values = [title, main_image_url, description, price, phone, TYPE, town_id, user_id, category_id, created_at];
+
+  try {
+    // Čia turėtų būti kodas, kuris vykdo SQL užklausą, įterpdamas naują skelbimą į duomenų bazę
+    const result = await dbQueryWithData(sql, values);
+    
+    res.status(201).json({ message: 'Skelbimas sukurtas sėkmingai' });
+  } catch (error) {
+    console.error('Klaida kuriant skelbimą:', error);
+    res.status(500).json({ error: 'Klaida kuriant skelbimą' });
+  }
+});
+
 
 
 export default adsRouter;

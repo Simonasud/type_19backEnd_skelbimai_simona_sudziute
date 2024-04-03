@@ -2,6 +2,11 @@ export type AdsObjType = {
   id: number;
   title: string;
   main_image_url: string;
+  image_1?: string;
+  image_2?: string;
+  image_3?: string;
+  image_4?: string;
+  image_5?: string;
   description: string;
   price: number;
   phone: string;
