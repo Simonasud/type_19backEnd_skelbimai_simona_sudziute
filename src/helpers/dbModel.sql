@@ -86,6 +86,21 @@ INSERT INTO kategorijos (name) VALUES
 ('Drabužiai'),
 ('Buitinė technika');
 
+--lenteliu jungimas 
+SELECT 
+    skelbimai.id AS skelbimo_id, 
+    vartotojai.id AS vartotojo_id, 
+    miestai.id AS miesto_id, 
+    kategorijos.id AS kategorijos_id 
+FROM 
+    skelbimai 
+LEFT JOIN 
+    vartotojai ON skelbimai.user_id = vartotojai.id 
+LEFT JOIN 
+    miestai ON skelbimai.town_id = miestai.id 
+LEFT JOIN 
+    kategorijos ON skelbimai.category_id = kategorijos.id;
+
 
 
 

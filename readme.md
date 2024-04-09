@@ -53,7 +53,7 @@ name
 1. GET /api/ads - grazina visus skelbimus
 2. GET /api/ads/:id - grazina viena skelbima
 3. POST /api/ads - sukuria nauja skelbima
-   DELETE /api/ads/:id - istrina skelbima (is_published = false)
+4. DELETE /api/ads/:id - istrina skelbima (is_published = false)
    Autentifikacijos Routes
    POST /api/auth/register - registruoja nauja vartotoja
    POST /api/auth/login - prisijungia vartotoja Slaptazodziai turetu buti saugomi hashuotu formatu. Brcypt arba kitu biblioteku pagalba.
