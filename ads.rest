@@ -1,13 +1,18 @@
-### Gauti visus skelbimus(publikuotus)
-GET http://localhost:3000/api/ads/filter?townId=1
+### filtaviams
+GET http://localhost:3000/api/ads/filter?town=Vilnius
+### filtaviams
+GET http://localhost:3000/api/ads/filter?type=sell
 
-### Gauti visus skelbimus(publikuotus)
+### filtaviams visu
+GET http://localhost:3000/api/ads/filter?town=Vilnius&category=Automobiliai
+
+### Gauti visus skelbimus(publikuotus/nepublikuotus)
 GET http://localhost:3000/api/ads
 
 ### Gauti visus skelbimus 404
 GET http://localhost:3000/api/4004
 
-### Gauti viena skelbima
+### Gauti viena skelbima pagal jo id(publikuotus/nepublikuotus)
 GET http://localhost:3000/api/ads/1
 
 ### Sukurti skelbima
@@ -19,11 +24,8 @@ Content-Type: application/json
   "description": "Lovyte beveik kaip nauja, yra keli įbrėžimai",
   "price": 40,
   "phone": "+3709998889",
-  "TYPE": "sell",
-  "town": "Kaunas",
-  "category": "Autobobiliai"
+  "TYPE": "sell"
 }
 
-
 ### Istrinti viena skelbima
-DELETE http://localhost:3000/api/ads/2
+DELETE http://localhost:3000/api/ads/1

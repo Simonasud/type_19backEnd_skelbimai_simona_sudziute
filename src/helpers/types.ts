@@ -20,14 +20,28 @@ export type AdsObjType = {
 
 export type AdsObjTypeNoId = Omit<AdsObjType, 'id'>
 
-export type AdsFormType = {
-  title: string,
-  description: string,
-  price: number,
-  phone: string,
-  TYPE: string,
-  town: string,
-  category: string;
+
+
+export type TownType = {
+  id: number;
+  name: string;
+  population: number;
+  area: number;
+}
+
+export type TownTypeNoId = Omit<TownType, 'id'>
+
+export type UserObjType = {
+  id?: number;
+  name?: string;
+  email: string;
+  password: string;
+  avatar_url?: string;
+}
+
+export type  CategoryType = {
+  id: number;
+  NAME: string;
 }
 
 

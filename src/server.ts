@@ -6,6 +6,9 @@ import cors from 'cors'
 import { PORT } from './config.js'
 import testConnection from './helpers/msqTestRoute.js'
 import adsRouter from './routes/adsRouter.js'
+import townRouter from './routes/townRouter.js'
+import userRouter from './routes/userRouter.js'
+import categoryRouter from './routes/categoryRoute.js'
 
 const app = express()
 
@@ -25,6 +28,10 @@ app.get('/', (_req, res) => {
 
 // Routes
 app.use('/api/ads', adsRouter);
+app.use('/api/town', townRouter);
+app.use('/api/user', userRouter);
+app.use('/api/category', categoryRouter);
+
 
 // 404
 app.use((req, res) => {

@@ -1,0 +1,18 @@
+### Gauti visus miestus
+GET http://localhost:3000/api/town
+
+### Gauti viena skelbima
+GET http://localhost:3000/api/town/1
+
+### Sukurti skelbima
+POST http://localhost:3000/api/town
+Content-Type: application/json
+
+{
+  "name": "Šilutė", 
+  "population": "37.500", 
+  "area": 1780 
+}
+
+### Istrinti viena miesta pagal id
+DELETE http://localhost:3000/api/town/2
