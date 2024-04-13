@@ -1,8 +1,8 @@
 import express from 'express';
 import dbQueryWithData from '../helpers/helper.js';
 import { AdsObjType, AdsObjTypeNoId } from '../helpers/types.js';
-import { ResultSetHeader } from 'mysql2';
 import { checkAdsBody } from '../middleware/middleware.js';
+import { ResultSetHeader } from 'mysql2';
 
 const adsRouter = express.Router();
 
@@ -10,15 +10,14 @@ const adsRouter = express.Router();
 //   'id', 'title', 'main_image_url','description', 'price', 'phone', 'type', 'town_id', 'user_id', 'category_id', 'created_at', 'is_published',
 // ]
 
-const adsCols = 'id, title, main_image_url, image_1, image_2, image_3, image_4, image_5, description, price, phone, TYPE, town_id, user_id, created_at'
+const adsCols = 'id, title, main_image_url, image_1, image_2, image_3, image_4, image_5, description, price, phone, TYPE, town_id, user_id, category_id, created_at'
 
 // GET - /api/skelbimai 'gauname visus skelbimus'
 adsRouter.get('/', async (_req, res) => {
   // panaudoti dbQueryWithData
-  const sql = `SELECT ${adsCols} FROM skelbimai WHERE is_published = TRUE OR is_published = FALSE
-  `;
+  const sql = `SELECT ${adsCols} FROM skelbimai WHERE is_published = TRUE`;
 
-  const [row, error] = await dbQueryWithData(sql) as [AdsObjType[], Error];
+  const [row, error] = await dbQueryWithData<AdsObjType[]>(sql) ;
 
   if (error) {
     console.warn('grazina visus skelbimus error ===', error);
@@ -36,7 +35,7 @@ adsRouter.get('/', async (_req, res) => {
 
 adsRouter.get('/town', async (_req, res) => {
   const sql = `SELECT skelbimai.*, miestai.name AS town FROM skelbimai LEFT JOIN miestai ON skelbimai.town_id = miestai.id WHERE skelbimai.is_published = TRUE`
-  const [row, error] = (await dbQueryWithData(sql)) as [AdsObjType[], Error]
+  const [row, error] = await dbQueryWithData<AdsObjType[]>(sql)
 
   if(error) {
     console.warn('get all towns error ===', error)
@@ -49,7 +48,7 @@ adsRouter.get('/town', async (_req, res) => {
 
 adsRouter.get('/category', async (_req, res) => {
   const sql = `SELECT skelbimai.*, kategorijos.name AS category FROM skelbimai LEFT JOIN kategorijos ON skelbimai.category_id = category.id WHERE skelbimai.is_published = TRUE`
-  const [row, error] = (await dbQueryWithData(sql)) as [AdsObjType[], Error]
+  const [row, error] = await dbQueryWithData<AdsObjType[]>(sql)
 
   if(error) {
     console.warn('get all categories error ===', error)
@@ -96,7 +95,7 @@ adsRouter.get('/filter', async (req, res) => {
   }
 
   try {
-    const [row, error] = await dbQueryWithData(sql, argArr) as [AdsObjType[], Error];
+    const [row, error] = await await dbQueryWithData<AdsObjType[]>(sql)
 
     if (error) {
       console.warn('Error fetching filtered ads:', error);
@@ -110,14 +109,36 @@ adsRouter.get('/filter', async (req, res) => {
   }
 });
 
+// GET - /ads/user/id/1
+adsRouter.get('/user/id/:userId', async (req, res) => {
+  const userId = req.params.userId;
+
+const sql = `SELECT ${adsCols} FROM skelbimai WHERE is_published=true AND user_id=?`
+
+const [rows, error] = await dbQueryWithData<AdsObjType[]>(sql, [userId])
+
+if ( error) {
+  console.warn('get all ads error ===', error)
+  console.warn('error ===', error.message)
+  return res.status(400).json({ error: 'something went wrong'})}
+
+  if (rows.length === 0) {
+    console.log('no rows');
+    return res.status(404).json({ msg: `ad with id: '${userId}' was not found` });
+  }
+
+console.log('rows ===', rows);
+res.json(rows)
+})
+
 
 // GET /api/ads/:id - grazina viena skelbima
 adsRouter.get('/:addId', async (req, res) => {
   const currentId = req.params.addId;
 
-  const sql = `SELECT ${adsCols} FROM skelbimai WHERE is_published=TRUE OR is_published=FALSE AND id=?`;
+  const sql = `SELECT ${adsCols} FROM skelbimai WHERE is_published=TRUE AND id=?`;
 
-  const [rows, error] = (await dbQueryWithData(sql, [currentId])) as [AdsObjType[], Error];
+  const [rows, error] = await dbQueryWithData<AdsObjType[]>(sql, [currentId])
 
   if (error) {
     console.warn('grazinti viena irasa pagal id error ===', error);
@@ -138,24 +159,19 @@ adsRouter.get('/:addId', async (req, res) => {
 
 // POST /api/ads - sukuria nauja skelbima
 adsRouter.post('/', checkAdsBody, async (req, res) => {
-  const { title, description, price, phone, TYPE } = req.body as AdsObjTypeNoId;
-  const argArr = [title, description, price, phone, TYPE ];
+  const { title, main_image_url, image_1 = '', image_2 = '', image_3 = '', image_4 = '', image_5 = '', description, price, phone, TYPE, town_id, user_id, category_id} = req.body as AdsObjTypeNoId;
 
-  const sql = `INSERT INTO skelbimai (title, description, price, phone, type, town_id, category_id) 
-  VALUES (?, ?, ?, ?, ?, (SELECT id FROM miestai WHERE name = ? LIMIT 1), (SELECT id FROM kategorijos WHERE name = ? LIMIT 1))`
+  const sql = `INSERT INTO skelbimai ( title, main_image_url, image_1, image_2, image_3, image_4, image_5, description, price, phone, TYPE, town_id, user_id, category_id)  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  const [result, error] = await dbQueryWithData<ResultSetHeader>(sql, [title, main_image_url, image_1, image_2, image_3, image_4, image_5, description, price, phone, TYPE, town_id, user_id, category_id]);
 
-  try {
-    const [result] = await dbQueryWithData(sql, argArr);
-    if (result && typeof result === 'object' && 'insertId' in result) {
-      const insertedId = result.insertId;
-      res.json({ id: insertedId, ...req.body } as AdsObjTypeNoId);
-    } else {
-      throw new Error('Įvyko klaida kuriant naują skelbimą');
-    }
-  } catch (error) {
-    console.error('Sukurti naują skelbimą klaida:', error);
-    res.status(400).json({ error: 'Įvyko klaida kuriant naują skelbimą' });
+  if(error){
+    console.warn('error ===', error);
+    console.warn('error ===', error.message);
+    return res.status(400).json({error: 'something went wrong'})
   }
+ 
+  res.json({success: true, result})
+
 });
 
 
@@ -166,14 +182,14 @@ adsRouter.delete('/:adsId', async (req, res) => {
   const sql = `UPDATE skelbimai SET is_published = False WHERE id = ?`
 
   try {
-    const [result, error] = await dbQueryWithData(sql, [currentId]) as [ResultSetHeader, Error]; // Using ResultSetHeader since it's a DELETE operation
+    const [rows, error] = await dbQueryWithData<ResultSetHeader>(sql, [currentId]) 
 
     if (error) {
       console.warn('Istrinti irasa pagal id klaida:', error);
       return res.status(400).json({ error: 'Kazkas atsitiko' });
     }
 
-    if (result.affectedRows === 0) {
+    if (rows.affectedRows === 0) {
       console.log('Nerasta eiluciu');
       return res.status(404).json({ msg: `Skelbimas su id: '${currentId}' nerastas` });
     }

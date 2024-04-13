@@ -29,7 +29,7 @@ app.get('/', (_req, res) => {
 // Routes
 app.use('/api/ads', adsRouter);
 app.use('/api/town', townRouter);
-app.use('/api/user', userRouter);
+app.use('/api/auth', userRouter);
 app.use('/api/category', categoryRouter);
 
 

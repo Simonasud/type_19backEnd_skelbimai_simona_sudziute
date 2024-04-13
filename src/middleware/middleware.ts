@@ -10,8 +10,10 @@ export async function checkAdsBody(req: Request, res: Response, next: NextFuncti
     price: Yup.number().min(0).required(),
     phone: Yup.string().min(3).max(255).required(),
     TYPE: Yup.string().required(),
-    // town: Yup.string().required(),
-    // category: Yup.string().required(),
+    user_id: Yup.number(),
+    town_id: Yup.number(),
+    category_id: Yup.number(),
+    main_image_url: Yup.string().min(3).required()
   })
 
   try {

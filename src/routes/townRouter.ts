@@ -14,7 +14,7 @@ townRouter.get('/', async (_req, res) => {
   // panaudoti dbQueryWithData
   const sql = `SELECT ${townCols} FROM miestai`;
 
-  const [row, error] = await dbQueryWithData(sql) as [TownType[], Error];
+  const [row, error] = await dbQueryWithData<TownType[]>(sql) 
 
   if (error) {
     console.warn('grazina visus miestu error ===', error);
@@ -35,7 +35,7 @@ townRouter.get('/:id', async (req, res) => {
 
   const sql = `SELECT ${townCols} FROM miestai WHERE id=?`;
 
-  const [rows, error] = (await dbQueryWithData(sql, [currentTownId])) as [TownType[], Error];
+  const [rows, error] = (await dbQueryWithData<TownType[]>(sql, [currentTownId])) 
 
   if (error) {
     console.warn('grazinti viena miesta pagal id error ===', error);
@@ -84,7 +84,7 @@ townRouter.delete('/:id', async (req, res) => {
   const sql = `DELETE FROM miestai WHERE id = ?`;
 
   try {
-    const [result, error] = await dbQueryWithData(sql, [currentTownId]) as [ResultSetHeader, Error];
+    const [result, error] = await dbQueryWithData<ResultSetHeader>(sql, [currentTownId])
 
     if (error) {
       console.warn('Istrinti irasa pagal id klaida:', error);

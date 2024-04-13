@@ -6,25 +6,32 @@ GET http://localhost:3000/api/ads/filter?type=sell
 ### filtaviams visu
 GET http://localhost:3000/api/ads/filter?town=Vilnius&category=Automobiliai
 
-### Gauti visus skelbimus(publikuotus/nepublikuotus)
+### Gauti visus skelbimus(publikuotus)
 GET http://localhost:3000/api/ads
+
+### Gauti visus skelbimus(publikuotus)
+GET http://localhost:3000/api/ads/user/id/1
 
 ### Gauti visus skelbimus 404
 GET http://localhost:3000/api/4004
 
-### Gauti viena skelbima pagal jo id(publikuotus/nepublikuotus)
-GET http://localhost:3000/api/ads/1
+### Gauti viena skelbima pagal jo id(publikuotas)
+GET http://localhost:3000/api/ads/2
 
 ### Sukurti skelbima
 POST http://localhost:3000/api/ads
 Content-Type: application/json
 
 {
-  "title": "Parduodu vaikišką lovytę",
-  "description": "Lovyte beveik kaip nauja, yra keli įbrėžimai",
-  "price": 40,
-  "phone": "+3709998889",
-  "TYPE": "sell"
+  "title": "Parduodu automobilį",
+  "description": "Automobilis labai geros būklės",
+  "price": 5000,
+  "main_image_url": "mainCar.jpg",
+  "phone": "+37060000000",
+  "TYPE": "sell",
+  "user_id": 2,
+  "town_id": 4,
+  "category_id": 6
 }
 
 ### Istrinti viena skelbima

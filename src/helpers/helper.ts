@@ -1,19 +1,25 @@
-import mysql from 'mysql2/promise'; // Importuojame mysql2 biblioteką su pažadais
+import mysql from 'mysql2/promise';
 import { dbConfig } from '../config.js';
 
-export default async function dbQueryWithData(sql: string, argArr: (string | number)[] = []) {
+type QueryResult<T> = [T, null] | [null, Error];
+
+export default async function dbQueryWithData<T>(
+  sql: string,
+  argArr: (string | number)[] = [],
+): Promise<QueryResult<T>> {
   let conn;
   try {
-    // Prisijungiame prie duomenų bazės
+    // prisijungti prie DB
     conn = await mysql.createConnection(dbConfig);
+    // atlikti veikma
     const [rows, _fields] = await conn.execute(sql, argArr);
-    // Graziname duomenis
-    return [rows, null];
+    // console.log('fields ===', fields);
+    // grazinti duomenis
+    return [rows as T, null];
   } catch (error) {
-    console.error('Klaida vykdant duomenų bazės užklausą:', error);
-    return [null, error];
+    return [null, error as Error];
   } finally {
-    // Atsijungiame nuo duomenų bazės
+    // atsijungti nuo DB
     if (conn) conn.end();
   }
 }

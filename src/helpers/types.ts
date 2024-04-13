@@ -11,11 +11,11 @@ export type AdsObjType = {
   price: number;
   phone: string;
   TYPE: string;
-  town_id?: number 
-  user_id?: number 
-  category_id?: number 
-  created_at?: string 
-  is_published: boolean;
+  town_id: number 
+  user_id: number 
+  category_id: number 
+  created_at: string 
+  is_published?: boolean;
 }
 
 export type AdsObjTypeNoId = Omit<AdsObjType, 'id'>
@@ -33,9 +33,9 @@ export type TownTypeNoId = Omit<TownType, 'id'>
 
 export type UserObjType = {
   id?: number;
-  name?: string;
+  NAME?: string;
   email: string;
-  password: string;
+  PASSWORD: string;
   avatar_url?: string;
 }
 

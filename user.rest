@@ -1,19 +1,19 @@
 ### Sukurti useri
-POST http://localhost:3000/api/user/register
+POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
 {
   "NAME": "James Bond",
-  "email": "james@bond3.com",
+  "email": "james@bond4.com",
   "PASSWORD": "123456",
   "avatar_url": "https://example.com/avatar4.jpg"
 }
 
 ### Priloginti useri
-POST http://localhost:3000/api/user/login
+POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "james@bond.com",
+  "email": "james@bond4.com",
   "PASSWORD": "123456"
 }

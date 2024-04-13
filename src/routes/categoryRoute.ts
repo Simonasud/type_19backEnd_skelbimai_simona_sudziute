@@ -9,7 +9,7 @@ categoryRouter.get('/', async (_req, res) => {
   // panaudoti dbQueryWithData
   const sql = `SELECT * FROM kategorijos`;
 
-  const [row, error] = (await dbQueryWithData(sql)) as [CategoryType[], Error];
+  const [row, error] = await dbQueryWithData<CategoryType[]>(sql) 
 
   if (error) {
     console.warn('grazina visus miestu error ===', error);
