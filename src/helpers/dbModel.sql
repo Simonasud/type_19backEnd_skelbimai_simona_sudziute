@@ -101,17 +101,30 @@ LEFT JOIN
 LEFT JOIN 
     kategorijos ON skelbimai.category_id = kategorijos.id;
 
--- skelbimai join kad gautu name
-SELECT 
-    skelbimai.*,
-    miestai.name AS town_name,
-    kategorijos.name AS category_name
-FROM 
+-- skelbimai gauna email
+SELECT
+    skelbimai.id,
+    skelbimai.title,
+    skelbimai.main_image_url,
+    skelbimai.image_1,
+    skelbimai.image_2,
+    skelbimai.image_3,
+    skelbimai.image_4,
+    skelbimai.image_5,
+    skelbimai.description,
+    skelbimai.price,
+    skelbimai.phone,
+    skelbimai.TYPE,
+    skelbimai.town_id,
+    skelbimai.user_id,
+    skelbimai.category_id,
+    skelbimai.created_at,
+    vartotojai.email
+FROM
     skelbimai
-JOIN
-    miestai ON skelbimai.town_id = miestai.id
-JOIN
-    kategorijos ON skelbimai.category_id = kategorijos.id;
+LEFT JOIN vartotojai ON skelbimai.user_id = vartotojai.id
+WHERE
+    skelbimai.is_published = TRUE;
 
 
 

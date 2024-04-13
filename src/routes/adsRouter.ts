@@ -15,7 +15,29 @@ const adsCols = 'id, title, main_image_url, image_1, image_2, image_3, image_4, 
 // GET - /api/skelbimai 'gauname visus skelbimus'
 adsRouter.get('/', async (_req, res) => {
   // panaudoti dbQueryWithData
-  const sql = `SELECT ${adsCols} FROM skelbimai WHERE is_published = TRUE`;
+  const sql = `SELECT
+  skelbimai.id,
+  skelbimai.title,
+  skelbimai.main_image_url,
+  skelbimai.image_1,
+  skelbimai.image_2,
+  skelbimai.image_3,
+  skelbimai.image_4,
+  skelbimai.image_5,
+  skelbimai.description,
+  skelbimai.price,
+  skelbimai.phone,
+  skelbimai.TYPE,
+  skelbimai.town_id,
+  skelbimai.user_id,
+  skelbimai.category_id,
+  skelbimai.created_at,
+  vartotojai.email
+FROM
+  skelbimai
+LEFT JOIN vartotojai ON skelbimai.user_id = vartotojai.id
+WHERE
+  skelbimai.is_published = TRUE`;
 
   const [row, error] = await dbQueryWithData<AdsObjType[]>(sql) ;
 
