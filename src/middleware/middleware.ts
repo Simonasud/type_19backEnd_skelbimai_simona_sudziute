@@ -9,7 +9,7 @@ export async function checkAdsBody(req: Request, res: Response, next: NextFuncti
     description: Yup.string().min(3).max(255).required(),
     price: Yup.number().min(0).required(),
     phone: Yup.string().min(3).max(255).required(),
-    TYPE: Yup.string().required(),
+    type: Yup.string().required(),
     user_id: Yup.number(),
     town_id: Yup.number(),
     category_id: Yup.number(),

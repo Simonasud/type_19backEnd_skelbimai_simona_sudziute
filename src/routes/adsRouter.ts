@@ -10,33 +10,29 @@ const adsRouter = express.Router();
 //   'id', 'title', 'main_image_url','description', 'price', 'phone', 'type', 'town_id', 'user_id', 'category_id', 'created_at', 'is_published',
 // ]
 
-const adsCols = 'id, title, main_image_url, image_1, image_2, image_3, image_4, image_5, description, price, phone, TYPE, town_id, user_id, category_id, created_at'
+const adsCols = 'id, title, main_image_url, image_1, image_2, image_3, image_4, image_5, description, price, phone, type, town_id, user_id, category_id, created_at'
+
+// const adsColsWithEmail = 'skelbimai.id, skelbimai.title, skelbimai main_image_url, skelbimai.image_1, skelbimai.image_2, skelbimai.image_3,skelbimai.image_4, skelbimai.image_5, skelbimai.description, skelbimai.price,skelbimai.phone, skelbimai.type, skelbimai.town_id, skelbimai.user_id, skelbimai.category_id, skelbimai.created_at, vartotojai.email'
 
 // GET - /api/skelbimai 'gauname visus skelbimus'
 adsRouter.get('/', async (_req, res) => {
   // panaudoti dbQueryWithData
-  const sql = `SELECT
-  skelbimai.id,
-  skelbimai.title,
-  skelbimai.main_image_url,
-  skelbimai.image_1,
-  skelbimai.image_2,
-  skelbimai.image_3,
-  skelbimai.image_4,
-  skelbimai.image_5,
-  skelbimai.description,
-  skelbimai.price,
-  skelbimai.phone,
-  skelbimai.TYPE,
-  skelbimai.town_id,
-  skelbimai.user_id,
-  skelbimai.category_id,
-  skelbimai.created_at,
-  vartotojai.email
-FROM
+  const sql = `SELECT skelbimai.id, skelbimai.title, skelbimai.main_image_url, skelbimai.image_1,skelbimai.image_2, skelbimai.image_3, skelbimai.image_4, skelbimai.image_5, skelbimai.description, skelbimai.price, skelbimai.phone, skelbimai.type, skelbimai.town_id, 
+  skelbimai.user_id, 
+  skelbimai.category_id, 
+  skelbimai.created_at, 
+  vartotojai.email, 
+  miestai.NAME AS town_name, 
+  kategorijos.NAME AS category_name
+FROM 
   skelbimai
-LEFT JOIN vartotojai ON skelbimai.user_id = vartotojai.id
-WHERE
+LEFT JOIN 
+  vartotojai ON skelbimai.user_id = vartotojai.id
+LEFT JOIN 
+  miestai ON skelbimai.town_id = miestai.id
+LEFT JOIN 
+  kategorijos ON skelbimai.category_id = kategorijos.id
+WHERE 
   skelbimai.is_published = TRUE`;
 
   const [row, error] = await dbQueryWithData<AdsObjType[]>(sql) ;
@@ -55,69 +51,266 @@ WHERE
 
 //Filtravimas pagal miesta, kategorija, tipa, kaina
 
-adsRouter.get('/town', async (_req, res) => {
-  const sql = `SELECT skelbimai.*, miestai.name AS town FROM skelbimai LEFT JOIN miestai ON skelbimai.town_id = miestai.id WHERE skelbimai.is_published = TRUE`
-  const [row, error] = await dbQueryWithData<AdsObjType[]>(sql)
+adsRouter.get('/town', async (req, res) => {
+  const townName = req.query.town; // Gauname miesto pavadinimą iš užklausos
 
-  if(error) {
-    console.warn('get all towns error ===', error)
-    console.warn('error message ===', error.message)
-    return res.status(400).json({ error: 'something went wrong'})
+  if (typeof townName !== 'string') {
+    return res.status(400).json({ error: 'Invalid town name' });
   }
 
-  res.json(row)
-})
+  const sql = `SELECT
+    skelbimai.id,
+    skelbimai.title,
+    skelbimai.main_image_url,
+    skelbimai.image_1,
+    skelbimai.image_2,
+    skelbimai.image_3,
+    skelbimai.image_4,
+    skelbimai.image_5,
+    skelbimai.description,
+    skelbimai.price,
+    skelbimai.phone,
+    skelbimai.type,
+    skelbimai.town_id,
+    skelbimai.user_id,
+    skelbimai.category_id,
+    skelbimai.created_at,
+    vartotojai.email,
+    miestai.NAME AS town_name,
+    kategorijos.NAME AS category_name
+  FROM
+    skelbimai
+  LEFT JOIN vartotojai ON skelbimai.user_id = vartotojai.id
+  LEFT JOIN miestai ON skelbimai.town_id = miestai.id
+  LEFT JOIN kategorijos ON skelbimai.category_id = kategorijos.id
+  WHERE
+    skelbimai.is_published = TRUE AND miestai.NAME = ?`; // Naudokite klausimo ženklą parametrui
 
-adsRouter.get('/category', async (_req, res) => {
-  const sql = `SELECT skelbimai.*, kategorijos.name AS category FROM skelbimai LEFT JOIN kategorijos ON skelbimai.category_id = category.id WHERE skelbimai.is_published = TRUE`
-  const [row, error] = await dbQueryWithData<AdsObjType[]>(sql)
+  try {
+    const [row, error] = await dbQueryWithData<AdsObjType[]>(sql, [townName]); // Pateikiame miesto pavadinimą kaip parametrą
 
-  if(error) {
-    console.warn('get all categories error ===', error)
-    console.warn('error message ===', error.message)
-    return res.status(400).json({ error: 'something went wrong'})
+    if (error) {
+      console.warn('get all towns error ===', error);
+      console.warn('error message ===', error.message);
+      return res.status(400).json({ error: 'something went wrong' });
+    }
+
+    res.json(row);
+  } catch (error) {
+    console.error('get all towns error ===', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+adsRouter.get('/price', async (req, res) => {
+  const priceName = req.query.price; // Gauname miesto pavadinimą iš užklausos
+
+  if (typeof priceName !== 'string') {
+    return res.status(400).json({ error: 'Incorect price' });
   }
 
-  res.json(row)
-})
+  const sql = `SELECT
+    skelbimai.id,
+    skelbimai.title,
+    skelbimai.main_image_url,
+    skelbimai.image_1,
+    skelbimai.image_2,
+    skelbimai.image_3,
+    skelbimai.image_4,
+    skelbimai.image_5,
+    skelbimai.description,
+    skelbimai.price,
+    skelbimai.phone,
+    skelbimai.type,
+    skelbimai.town_id,
+    skelbimai.user_id,
+    skelbimai.category_id,
+    skelbimai.created_at,
+    vartotojai.email,
+    miestai.NAME AS town_name,
+    kategorijos.NAME AS category_name
+  FROM
+    skelbimai
+  LEFT JOIN vartotojai ON skelbimai.user_id = vartotojai.id
+  LEFT JOIN miestai ON skelbimai.town_id = miestai.id
+  LEFT JOIN kategorijos ON skelbimai.category_id = kategorijos.id
+  WHERE
+    skelbimai.is_published = TRUE AND skelbimai.price = ?`; // Naudokite klausimo ženklą parametrui
+
+  try {
+    const [row, error] = await dbQueryWithData<AdsObjType[]>(sql, [priceName]); // Pateikiame miesto pavadinimą kaip parametrą
+
+    if (error) {
+      console.warn('get all prices error ===', error);
+      console.warn('error message ===', error.message);
+      return res.status(400).json({ error: 'something went wrong' });
+    }
+
+    res.json(row);
+  } catch (error) {
+    console.error('get all prices error ===', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+adsRouter.get('/type', async (req, res) => {
+  const typeName = req.query.type; // Gauname miesto pavadinimą iš užklausos
+
+  if (typeof typeName !== 'string') {
+    return res.status(400).json({ error: 'Incorect price' });
+  }
+
+  const sql = `SELECT
+    skelbimai.id,
+    skelbimai.title,
+    skelbimai.main_image_url,
+    skelbimai.image_1,
+    skelbimai.image_2,
+    skelbimai.image_3,
+    skelbimai.image_4,
+    skelbimai.image_5,
+    skelbimai.description,
+    skelbimai.price,
+    skelbimai.phone,
+    skelbimai.type,
+    skelbimai.town_id,
+    skelbimai.user_id,
+    skelbimai.category_id,
+    skelbimai.created_at,
+    vartotojai.email,
+    miestai.NAME AS town_name,
+    kategorijos.NAME AS category_name
+  FROM
+    skelbimai
+  LEFT JOIN vartotojai ON skelbimai.user_id = vartotojai.id
+  LEFT JOIN miestai ON skelbimai.town_id = miestai.id
+  LEFT JOIN kategorijos ON skelbimai.category_id = kategorijos.id
+  WHERE
+    skelbimai.is_published = TRUE AND skelbimai.type = ?`; // Naudokite klausimo ženklą parametrui
+
+  try {
+    const [row, error] = await dbQueryWithData<AdsObjType[]>(sql, [typeName]); // Pateikiame miesto pavadinimą kaip parametrą
+
+    if (error) {
+      console.warn('get all type error ===', error);
+      console.warn('error message ===', error.message);
+      return res.status(400).json({ error: 'something went wrong' });
+    }
+
+    res.json(row);
+  } catch (error) {
+    console.error('get all types error ===', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+adsRouter.get('/category', async (req, res) => {
+  const categoryName = req.query.type; // Gauname miesto pavadinimą iš užklausos
+
+  if (typeof categoryName !== 'string') {
+    return res.status(400).json({ error: 'Incorect price' });
+  }
+
+  const sql = `SELECT
+    skelbimai.id,
+    skelbimai.title,
+    skelbimai.main_image_url,
+    skelbimai.image_1,
+    skelbimai.image_2,
+    skelbimai.image_3,
+    skelbimai.image_4,
+    skelbimai.image_5,
+    skelbimai.description,
+    skelbimai.price,
+    skelbimai.phone,
+    skelbimai.type,
+    skelbimai.town_id,
+    skelbimai.user_id,
+    skelbimai.category_id,
+    skelbimai.created_at,
+    vartotojai.email,
+    miestai.NAME AS town_name,
+    kategorijos.NAME AS category_name
+  FROM
+    skelbimai
+  LEFT JOIN vartotojai ON skelbimai.user_id = vartotojai.id
+  LEFT JOIN miestai ON skelbimai.town_id = miestai.id
+  LEFT JOIN kategorijos ON skelbimai.category_id = kategorijos.id
+  WHERE
+    skelbimai.is_published = TRUE AND kategorijos.NAME = ?`; // Naudokite klausimo ženklą parametrui
+
+  try {
+    const [row, error] = await dbQueryWithData<AdsObjType[]>(sql, [categoryName]); // Pateikiame miesto pavadinimą kaip parametrą
+
+    if (error) {
+      console.warn('get all category error ===', error);
+      console.warn('error message ===', error.message);
+      return res.status(400).json({ error: 'something went wrong' });
+    }
+
+    res.json(row);
+  } catch (error) {
+    console.error('get all categories error ===', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 // GET /api/ads/filter?town=Vilnius
 adsRouter.get('/filter', async (req, res) => {
-  const townVal = req.query.town?.toString();
+  const { town, category, price, type } = req.query;
 
- 
-  const categoryVal = req.query.category?.toString();
-  console.log('Received query parameters: town =', townVal, ', category =', categoryVal);
-  const typeVal = req.query.type?.toString(); 
-  const priceVal = req.query.price?.toString();
+  let sql = `SELECT
+    skelbimai.id,
+    skelbimai.title,
+    skelbimai.main_image_url,
+    skelbimai.image_1,
+    skelbimai.image_2,
+    skelbimai.image_3,
+    skelbimai.image_4,
+    skelbimai.image_5,
+    skelbimai.description,
+    skelbimai.price,
+    skelbimai.phone,
+    skelbimai.type,
+    skelbimai.town_id,
+    skelbimai.user_id,
+    skelbimai.category_id,
+    skelbimai.created_at,
+    vartotojai.email,
+    miestai.NAME AS town_name,
+    kategorijos.NAME AS category_name
+  FROM 
+    skelbimai
+  LEFT JOIN 
+    vartotojai ON skelbimai.user_id = vartotojai.id
+  LEFT JOIN 
+    miestai ON skelbimai.town_id = miestai.id
+  LEFT JOIN 
+    kategorijos ON skelbimai.category_id = kategorijos.id
+  WHERE 
+    skelbimai.is_published = TRUE`;
 
-  // if (!townVal && !categoryVal && !typeVal && !priceVal) {
-  //   return res.status(400).json({ error: 'No filter criteria provided' });
-  // }
+  const values = [];
 
-  let sql = `SELECT ${adsCols} FROM skelbimai s JOIN miestai m ON s.town_id = m.id WHERE s.is_published = TRUE`;
-
-  const argArr = [];
-
-  if (townVal) {
-    sql += ` AND m.town = ?`;
-    argArr.push(townVal);
+  if (town) {
+    sql += ` AND miestai.NAME = ?`;
+    values.push(town);
   }
-  if (categoryVal) {
-    sql += ` AND k.name = ?`;
-    argArr.push(categoryVal);
+  if (category) {
+    sql += ` AND kategorijos.NAME = ?`;
+    values.push(category);
   }
-  if (typeVal) {
-    sql += ` AND s.TYPE = ?`;
-    argArr.push(typeVal);
+  if (price) {
+    sql += ` AND skelbimai.price <= ?`;
+    values.push(price);
   }
-  if (priceVal) {
-    sql += ` AND s.price = ?`;
-    argArr.push(priceVal);
+  if (type) {
+    sql += ` AND skelbimai.type = ?`;
+    values.push(type);
   }
 
   try {
-    const [row, error] = await await dbQueryWithData<AdsObjType[]>(sql)
+    const [row, error] = await dbQueryWithData<AdsObjType[]>(sql, values);
 
     if (error) {
       console.warn('Error fetching filtered ads:', error);
@@ -130,6 +323,7 @@ adsRouter.get('/filter', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 // GET - /ads/user/id/1
 adsRouter.get('/user/id/:userId', async (req, res) => {
@@ -181,10 +375,10 @@ adsRouter.get('/:addId', async (req, res) => {
 
 // POST /api/ads - sukuria nauja skelbima
 adsRouter.post('/', checkAdsBody, async (req, res) => {
-  const { title, main_image_url, image_1 = '', image_2 = '', image_3 = '', image_4 = '', image_5 = '', description, price, phone, TYPE, town_id, user_id, category_id} = req.body as AdsObjTypeNoId;
+  const { title, main_image_url, image_1 = '', image_2 = '', image_3 = '', image_4 = '', image_5 = '', description, price, phone, type, town_id, user_id, category_id} = req.body as AdsObjTypeNoId;
 
-  const sql = `INSERT INTO skelbimai ( title, main_image_url, image_1, image_2, image_3, image_4, image_5, description, price, phone, TYPE, town_id, user_id, category_id)  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-  const [result, error] = await dbQueryWithData<ResultSetHeader>(sql, [title, main_image_url, image_1, image_2, image_3, image_4, image_5, description, price, phone, TYPE, town_id, user_id, category_id]);
+  const sql = `INSERT INTO skelbimai ( title, main_image_url, image_1, image_2, image_3, image_4, image_5, description, price, phone, type, town_id, user_id, category_id)  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  const [result, error] = await dbQueryWithData<ResultSetHeader>(sql, [title, main_image_url, image_1, image_2, image_3, image_4, image_5, description, price, phone, type, town_id, user_id, category_id]);
 
   if(error){
     console.warn('error ===', error);

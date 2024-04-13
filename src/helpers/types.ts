@@ -10,7 +10,7 @@ export type AdsObjType = {
   description: string;
   price: number;
   phone: string;
-  TYPE: string;
+  type: string;
   town_id: number 
   user_id: number 
   category_id: number 

@@ -1,10 +1,17 @@
-### filtaviams
+### filtaviams town
 GET http://localhost:3000/api/ads/filter?town=Vilnius
-### filtaviams
+
+### filtaviams type
 GET http://localhost:3000/api/ads/filter?type=sell
 
+### filtaviams price
+GET http://localhost:3000/api/ads/filter?price=300
+
+### filtaviams price
+GET http://localhost:3000/api/ads/filter?category=Automobiliai
+
 ### filtaviams visu
-GET http://localhost:3000/api/ads/filter?town=Vilnius&category=Automobiliai
+GET http://localhost:3000/api/ads/filter?town=Vilnius&category=Nekilnojamas turtas&price=3000.00&type=buy
 
 ### Gauti visus skelbimus(publikuotus)
 GET http://localhost:3000/api/ads
