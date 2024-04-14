@@ -19,5 +19,14 @@ Content-Type: application/json
 }
 
 ### Gauti useri
-GET http://localhost:3000/api/users/1
+GET http://localhost:3000/api/users/3
+
+### padaryti update username
+PUT http://localhost:3000/api/users/update/name/3
+Content-Type: application/json
+
+{
+  "updateName": "Bond James"
+}
+
 

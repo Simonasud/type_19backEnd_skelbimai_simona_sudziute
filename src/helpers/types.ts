@@ -37,6 +37,7 @@ export type UserObjType = {
   NAME?: string;
   email: string;
   PASSWORD: string;
+  created_at: string;
   avatar_url?: string;
 }
 

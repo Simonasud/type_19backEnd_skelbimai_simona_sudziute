@@ -1,6 +1,7 @@
 import express from 'express';
 import dbQueryWithData from '../helpers/helper.js';
 import { UserObjType } from '../helpers/types.js';
+import { ResultSetHeader } from 'mysql2';
 
 
 const userRouter = express.Router();
@@ -27,6 +28,23 @@ userRouter.get('/:userId', async (req, res) => {
   }
 
   res.json(userArr[0])
+})
+
+userRouter.put('/update/name/:userId', async (req, res) => {
+  const userId = req.params.userId
+  const { updateName } = req.body
+
+  const sql = 'UPDATE vartotojai SET NAME = ? WHERE id = ?'
+
+  const [result, msqlErr] = await dbQueryWithData<ResultSetHeader>(sql, [updateName, userId])
+
+  if(msqlErr) {
+   console.warn('msqlErr ===', msqlErr);
+   return res.status(500).json('bad thing happen')
+  }
+
+  res.json({succes: true, msg: 'User name was updated'})
+
 })
 
 export default userRouter;
