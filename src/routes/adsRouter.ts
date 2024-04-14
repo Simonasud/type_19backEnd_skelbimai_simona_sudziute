@@ -257,7 +257,11 @@ adsRouter.get('/category', async (req, res) => {
 
 // GET /api/ads/filter?town=Vilnius
 adsRouter.get('/filter', async (req, res) => {
-  const { town, category, price, type } = req.query;
+  // const { town, category, price, type } = req.query;
+  const categoryVal = req.query.category?.toString();
+  const townVal = req.query.town?.toString();
+  const typeVal = req.query.type?.toString();
+  const priceVal = req.query.price?.toString();
 
   let sql = `SELECT
     skelbimai.id,
@@ -290,32 +294,33 @@ adsRouter.get('/filter', async (req, res) => {
   WHERE 
     skelbimai.is_published = TRUE`;
 
-  const values = [];
+  const valuesArr = [];
 
-  if (town) {
+  if (townVal) {
     sql += ` AND miestai.NAME = ?`;
-    values.push(town);
+    valuesArr.push(townVal);
   }
-  if (category) {
+  if (categoryVal) {
     sql += ` AND kategorijos.NAME = ?`;
-    values.push(category);
+    valuesArr.push(categoryVal);
   }
-  if (price) {
+  if (priceVal) {
     sql += ` AND skelbimai.price <= ?`;
-    values.push(price);
+    valuesArr.push(priceVal);
   }
-  if (type) {
+  if (typeVal) {
     sql += ` AND skelbimai.type = ?`;
-    values.push(type);
+    valuesArr.push(typeVal);
   }
 
   try {
-    const [row, error] = await dbQueryWithData<AdsObjType[]>(sql, values);
+    const [row, error] = await dbQueryWithData<AdsObjType[]>(sql, valuesArr);
 
     if (error) {
       console.warn('Error fetching filtered ads:', error);
       return res.status(400).json({ error: 'Something went wrong while fetching filtered ads' });
     }
+
 
     res.json(row);
   } catch (error) {
@@ -352,7 +357,26 @@ res.json(rows)
 adsRouter.get('/:addId', async (req, res) => {
   const currentId = req.params.addId;
 
-  const sql = `SELECT ${adsCols} FROM skelbimai WHERE is_published=TRUE AND id=?`;
+  const sql = `SELECT skelbimai.id, skelbimai.title, skelbimai.main_image_url, skelbimai.image_1, skelbimai.image_2, skelbimai.image_3, skelbimai.image_4, skelbimai.image_5,skelbimai.description, skelbimai.price,
+  skelbimai.phone,
+  skelbimai.type,
+  skelbimai.town_id,
+  skelbimai.user_id,
+  skelbimai.category_id,
+  skelbimai.created_at,
+  vartotojai.email,
+  miestai.NAME AS town_name,
+  kategorijos.NAME AS category_name
+FROM 
+  skelbimai
+LEFT JOIN 
+  vartotojai ON skelbimai.user_id = vartotojai.id
+LEFT JOIN 
+  miestai ON skelbimai.town_id = miestai.id
+LEFT JOIN 
+  kategorijos ON skelbimai.category_id = kategorijos.id
+WHERE 
+  skelbimai.is_published = TRUE AND vartotojai.id = ?`;
 
   const [rows, error] = await dbQueryWithData<AdsObjType[]>(sql, [currentId])
 

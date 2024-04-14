@@ -23,7 +23,7 @@ GET http://localhost:3000/api/ads/user/id/1
 GET http://localhost:3000/api/4004
 
 ### Gauti viena skelbima pagal jo id(publikuotas)
-GET http://localhost:3000/api/ads/2
+GET http://localhost:3000/api/ads/1
 
 ### Sukurti skelbima
 POST http://localhost:3000/api/ads

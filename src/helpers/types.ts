@@ -27,6 +27,7 @@ export type TownType = {
   name: string;
   population: number;
   area: number;
+  cerated_at: string;
 }
 
 export type TownTypeNoId = Omit<TownType, 'id'>

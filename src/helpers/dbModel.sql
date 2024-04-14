@@ -47,6 +47,8 @@ CREATE TABLE miestai (
   population INT,
   area DECIMAL(10, 2) 
 );
+ALTER TABLE miestai
+ADD created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 
 INSERT INTO miestai (name, population, area) VALUES
 ('Vilnius', 587581, 401.02),
