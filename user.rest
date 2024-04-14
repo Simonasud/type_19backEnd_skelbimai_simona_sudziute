@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "NAME": "James Bond",
-  "email": "james@bond4.com",
+  "email": "james@bond77.com",
   "PASSWORD": "123456",
   "avatar_url": "https://example.com/avatar4.jpg"
 }
@@ -14,6 +14,10 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "james@bond4.com",
+  "email": "james@bond77.com",
   "PASSWORD": "123456"
 }
+
+### Gauti useri
+GET http://localhost:3000/api/users/1
+

@@ -2,7 +2,7 @@
 GET http://localhost:3000/api/town
 
 ### Gauti viena skelbima
-GET http://localhost:3000/api/town/1
+GET http://localhost:3000/api/town/3
 
 ### Sukurti skelbima
 POST http://localhost:3000/api/town

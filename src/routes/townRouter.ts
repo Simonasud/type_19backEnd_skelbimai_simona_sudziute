@@ -28,10 +28,12 @@ townRouter.get('/', async (_req, res) => {
   res.json(row);
 });
 
+// GET /api/ads/town/klaipeda - grazinti visus skelbimus kurie priklauso tam
+
 
 // GET /api/towns/:id - grazina viena miesta
-townRouter.get('/:id', async (req, res) => {
-  const currentTownId = req.params.id;
+townRouter.get('/:twonId', async (req, res) => {
+  const currentTownId = req.params.twonId;
 
   const sql = `SELECT ${townCols} FROM miestai WHERE id=?`;
 

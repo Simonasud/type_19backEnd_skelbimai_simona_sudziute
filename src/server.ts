@@ -9,6 +9,7 @@ import adsRouter from './routes/adsRouter.js'
 import townRouter from './routes/townRouter.js'
 import userRouter from './routes/userRouter.js'
 import categoryRouter from './routes/categoryRoute.js'
+import authRouter from './routes/authRouter.js'
 
 const app = express()
 
@@ -29,7 +30,8 @@ app.get('/', (_req, res) => {
 // Routes
 app.use('/api/ads', adsRouter);
 app.use('/api/town', townRouter);
-app.use('/api/auth', userRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/users', userRouter);
 app.use('/api/category', categoryRouter);
 
 

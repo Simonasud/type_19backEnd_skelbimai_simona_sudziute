@@ -35,7 +35,7 @@ Content-Type: application/json
   "price": 5000,
   "main_image_url": "mainCar.jpg",
   "phone": "+37060000000",
-  "TYPE": "sell",
+  "type": "sell",
   "user_id": 2,
   "town_id": 4,
   "category_id": 6
