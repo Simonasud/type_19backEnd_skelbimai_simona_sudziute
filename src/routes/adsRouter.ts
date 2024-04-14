@@ -375,8 +375,8 @@ LEFT JOIN
   miestai ON skelbimai.town_id = miestai.id
 LEFT JOIN 
   kategorijos ON skelbimai.category_id = kategorijos.id
-WHERE 
-  skelbimai.is_published = TRUE AND vartotojai.id = ?`;
+  WHERE 
+  skelbimai.is_published = TRUE AND skelbimai.id = ?`;
 
   const [rows, error] = await dbQueryWithData<AdsObjType[]>(sql, [currentId])
 
@@ -417,12 +417,36 @@ adsRouter.post('/', checkAdsBody, async (req, res) => {
 
 // DELETE /api/ads/:id - istrina skelbima (is_published = false)
 adsRouter.delete('/:adsId', async (req, res) => {
-  const currentId = req.params.adsId; // Corrected the parameter name
+  const currentAddId = req.params.adsId; // Corrected the parameter name
+  console.log('req.body ===', req.body);
+  console.log('currentId ===', currentAddId);
+
+ 
+
+
+  const sqll ='SELECT * FROM skelbimai WHERE id=?'
+  const [adsArr, myEror] = await dbQueryWithData<AdsObjType[]>(sqll, [currentAddId])
+
+  if(myEror) {
+    console.log('myEror ===', myEror);
+      return res.status(404).json({error: 'Skelbimas su tokiu id nerastas'})
+  }
+  console.log('adsArr ===', adsArr);
+  const addUserId = adsArr[0].user_id;
+  // return res.status(400).json(adsArr)
+
+
+  if(req.body.userId !== addUserId){
+    return res.status(401).json('Only owner can delete')
+  }
 
   const sql = `UPDATE skelbimai SET is_published = False WHERE id = ?`
+  
+  
+  // return
 
   try {
-    const [rows, error] = await dbQueryWithData<ResultSetHeader>(sql, [currentId]) 
+    const [rows, error] = await dbQueryWithData<ResultSetHeader>(sql, [currentAddId]) 
 
     if (error) {
       console.warn('Istrinti irasa pagal id klaida:', error);
@@ -431,11 +455,11 @@ adsRouter.delete('/:adsId', async (req, res) => {
 
     if (rows.affectedRows === 0) {
       console.log('Nerasta eiluciu');
-      return res.status(404).json({ msg: `Skelbimas su id: '${currentId}' nerastas` });
+      return res.status(404).json({ msg: `Skelbimas su id: '${currentAddId}' nerastas` });
     }
 
-    console.log('Istrintas irasas:', currentId);
-    res.json({ msg: `Skelbimas su id: '${currentId}' istrintas` });
+    console.log('Istrintas irasas:', currentAddId);
+    res.json({ msg: `Skelbimas su id: '${currentAddId}' istrintas` });
   } catch (error) {
     console.error('Istrinti irasa pagal id klaida:', error);
     res.status(500).json({ error: 'Serverio klaida' });
