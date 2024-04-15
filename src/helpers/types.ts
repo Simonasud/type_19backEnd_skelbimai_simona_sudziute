@@ -41,6 +41,14 @@ export type UserObjType = {
   avatar_url?: string;
 }
 
+export type UpdateUserObjType = {
+  NAME?: string;
+  email: string;
+  currentPassword: string;
+  PASSWORD: string;
+  avatar_url: string;
+};
+
 export type  CategoryType = {
   id: number;
   NAME: string;

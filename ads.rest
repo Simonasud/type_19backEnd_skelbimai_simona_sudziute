@@ -16,6 +16,9 @@ GET http://localhost:3000/api/ads/filter?town=Vilnius&category=Nekilnojamas turt
 ### Gauti visus skelbimus(publikuotus)
 GET http://localhost:3000/api/ads
 
+### Gaunu skelbima pagal miesta
+# GET http://localhost:3000/api/ads/byTown/2
+
 ### Gauti visus skelbimus(publikuotus)
 GET http://localhost:3000/api/ads/user/id/1
 
@@ -42,4 +45,4 @@ Content-Type: application/json
 }
 
 ### Istrinti viena skelbima
-DELETE http://localhost:3000/api/ads/1
+DELETE http://localhost:3000/api/ads/3

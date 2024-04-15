@@ -353,6 +353,9 @@ res.json(rows)
 })
 
 
+
+
+
 // GET /api/ads/:id - grazina viena skelbima
 adsRouter.get('/:addId', async (req, res) => {
   const currentId = req.params.addId;
@@ -394,6 +397,26 @@ LEFT JOIN
   console.log('rows ===', rows);
   res.json(rows[0]);
 });
+
+// // GET /byTown/:townId- grazina viena skelbima
+// adsRouter.get('/byTown/:townId', async (req, res) => {
+//   const townId = req.params.townId; // Extract town ID from URL parameter
+//   const sql = `
+//     SELECT skelbimai.id, skelbimai.title, skelbimai.main_image_url, skelbimai.image_1, skelbimai.image_2, skelbimai.image_3, skelbimai.image_4, skelbimai.image_5, skelbimai.description, skelbimai.price, skelbimai.phone, skelbimai.type, skelbimai.town_id, skelbimai.user_id, skelbimai.category_id, skelbimai.created_at 
+//     FROM skelbimai RIGHT JOIN miestai ON skelbimai.town_id = miestai.name 
+//     WHERE miestai.id = ? AND skelbimai.is_published = TRUE
+//   `;
+
+//   const [rows, error] = await dbQueryWithData<AdsObjType[]>(sql, [townId]);
+
+//   if (error) {
+//     console.warn('byTown ads error ===', error);
+//     console.warn('error ===', error.message);
+//     return res.status(400).json({ error: 'something went wrong' });
+//   }
+
+//   res.json(rows); // Return fetched ads data in the response
+// });
 
 
 

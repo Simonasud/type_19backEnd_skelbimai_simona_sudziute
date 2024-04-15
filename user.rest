@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "NAME": "James Bond",
-  "email": "james@bond77.com",
+  "email": "james@bond777.com",
   "PASSWORD": "123456",
   "avatar_url": "https://example.com/avatar4.jpg"
 }

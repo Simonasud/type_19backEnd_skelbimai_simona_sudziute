@@ -61,3 +61,31 @@ export async function checkTownBody(req: Request, res: Response, next: NextFunct
     return res.status(400).json(obj)
   }
 }
+
+export async function checkTownBody(req: Request, res: Response, next: NextFunction) {
+  console.log(' req.body ===',  req.body);
+
+  const townValidationsSchema = Yup.object({
+    name: Yup.string().min(3).max(255).required(),
+    population: Yup.number().min(0).required(),
+    area: Yup.number().min(0).required(),
+    
+  })
+
+  try {
+    const rez = await townValidationsSchema.validate(req.body, {abortEarly: false})
+    console.log('rez ===', rez);
+     next()
+  } catch (error: any) {
+    const yupError = error as Yup.ValidationError;
+    console.log('validation fail')
+    // suformuoti atsakyma kad griztu klaidu masyvas su objektais kuriame yra path ir error message
+    let obj = {}
+    yupError.inner.forEach((eObj) => {
+      const key = eObj.path;
+      obj = { ...obj, [key || '_']: eObj.message}
+       
+    })
+    return res.status(400).json(obj)
+  }
+}
